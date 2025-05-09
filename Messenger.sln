@@ -1,0 +1,57 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Messenger.API", "Messenger.API", "{8AF7E83A-6DE7-43E0-ABEA-6E5AEA089CE1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Messenger.API", "Messenger.API\Messenger.API.csproj", "{51F5AD3F-C02A-4F3B-9429-46B332C2F250}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Messenger.Application", "Messenger.Application", "{5D0C8D42-7F20-4FB6-9632-93225B64CFFE}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Messenger.Contracts", "Messenger.Contracts", "{62173556-A70F-45A4-836A-91E8A5EEFE6D}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Messenger.Domain", "Messenger.Domain", "{C5C72499-0853-4D44-B962-5D0BB6F0871F}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Messenger.Infrastructure", "Messenger.Infrastructure", "{3C3275A0-D85C-46CE-8B15-3CAF0F55C3BD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Messenger.Application", "Messenger.Application\Messenger.Application.csproj", "{71552ADF-C0E1-40AF-B3EC-2942052E8348}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Messenger.Contracts", "Messenger.Contracts\Messenger.Contracts.csproj", "{6FEE4433-655B-4BA1-81CE-6180F2F3FAD5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Messenger.Domain", "Messenger.Domain\Messenger.Domain.csproj", "{0D155E48-CCCB-448D-86A8-E29F0550D997}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Messenger.Infrastructure", "Messenger.Infrastructure\Messenger.Infrastructure.csproj", "{A13DE437-4524-4BF3-A97F-F4D539225365}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{51F5AD3F-C02A-4F3B-9429-46B332C2F250} = {8AF7E83A-6DE7-43E0-ABEA-6E5AEA089CE1}
+		{71552ADF-C0E1-40AF-B3EC-2942052E8348} = {5D0C8D42-7F20-4FB6-9632-93225B64CFFE}
+		{6FEE4433-655B-4BA1-81CE-6180F2F3FAD5} = {62173556-A70F-45A4-836A-91E8A5EEFE6D}
+		{0D155E48-CCCB-448D-86A8-E29F0550D997} = {C5C72499-0853-4D44-B962-5D0BB6F0871F}
+		{A13DE437-4524-4BF3-A97F-F4D539225365} = {3C3275A0-D85C-46CE-8B15-3CAF0F55C3BD}
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{51F5AD3F-C02A-4F3B-9429-46B332C2F250}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{51F5AD3F-C02A-4F3B-9429-46B332C2F250}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{51F5AD3F-C02A-4F3B-9429-46B332C2F250}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{51F5AD3F-C02A-4F3B-9429-46B332C2F250}.Release|Any CPU.Build.0 = Release|Any CPU
+		{71552ADF-C0E1-40AF-B3EC-2942052E8348}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{71552ADF-C0E1-40AF-B3EC-2942052E8348}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{71552ADF-C0E1-40AF-B3EC-2942052E8348}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{71552ADF-C0E1-40AF-B3EC-2942052E8348}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6FEE4433-655B-4BA1-81CE-6180F2F3FAD5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6FEE4433-655B-4BA1-81CE-6180F2F3FAD5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6FEE4433-655B-4BA1-81CE-6180F2F3FAD5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6FEE4433-655B-4BA1-81CE-6180F2F3FAD5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0D155E48-CCCB-448D-86A8-E29F0550D997}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0D155E48-CCCB-448D-86A8-E29F0550D997}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0D155E48-CCCB-448D-86A8-E29F0550D997}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0D155E48-CCCB-448D-86A8-E29F0550D997}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A13DE437-4524-4BF3-A97F-F4D539225365}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A13DE437-4524-4BF3-A97F-F4D539225365}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A13DE437-4524-4BF3-A97F-F4D539225365}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A13DE437-4524-4BF3-A97F-F4D539225365}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
