@@ -2,6 +2,7 @@ using Amazon.SecretsManager;
 using Amazon.SecretsManager.Model;
 using Messenger.Infrastructure.Configuration;
 using Messenger.Infrastructure.Interfaces;
+using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 
 namespace Messenger.Infrastructure.Services;
@@ -9,10 +10,12 @@ namespace Messenger.Infrastructure.Services;
 public class SnsConfigurationProvider : ISNSConfigurationProvider
 {
     private readonly IAmazonSecretsManager _secretsManager;
-
-    public SnsConfigurationProvider(IAmazonSecretsManager secretsManager)
+    private readonly ILogger<SnsConfigurationProvider> _logger;
+    
+    public SnsConfigurationProvider(IAmazonSecretsManager secretsManager, ILogger<SnsConfigurationProvider> logger)
     {
         _secretsManager = secretsManager;
+        _logger = logger;
     }
 
     public async Task<SNSConfiguration> GetConfigurationAsync()
@@ -28,12 +31,12 @@ public class SnsConfigurationProvider : ISNSConfigurationProvider
         }
         catch (ResourceNotFoundException e)
         {
-            Console.WriteLine("Secret 'Messenger/SNS' not found. Returning default configuration.");
+            _logger.LogError(e, "Secret 'Messenger/SNS' not found. Returning default configuration.");
             return new SNSConfiguration();
         }
-        catch (Exception e)
+        catch (Exception exception)
         {
-            Console.WriteLine($"Unexpected error retrieving secret: {e}");
+            _logger.LogError(exception, "An error occurred while retrieving SNS configuration.");
             throw;
         }
     }

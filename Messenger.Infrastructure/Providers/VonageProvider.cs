@@ -1,5 +1,6 @@
 using Messenger.Domain.Interfaces;
 using Messenger.Infrastructure.Interfaces;
+using Microsoft.Extensions.Logging;
 using Vonage;
 using Vonage.Messaging;
 using Vonage.Request;
@@ -9,9 +10,10 @@ namespace Messenger.Infrastructure.Providers;
 public class VonageProvider : IVonageProvider
 {
     private readonly VonageClient _client;
-
-    public VonageProvider(IVonageConfigurationProvider configuration)
+    private readonly ILogger<VonageProvider> _logger;
+    public VonageProvider(IVonageConfigurationProvider configuration, ILogger<VonageProvider> logger)
     {
+        _logger = logger;
         var cfg = configuration.GetConfigurationAsync().Result;
         
         var credentials = Credentials.FromApiKeyAndSecret(cfg.ApiKey, cfg.ApiSecret);
@@ -31,7 +33,7 @@ public class VonageProvider : IVonageProvider
         }
         catch (Exception exception)
         {
-            Console.WriteLine($"Failed to send Vonage: {exception}");
+            _logger.LogError(exception, "Failed to send Sms to {To}", toPhoneNumber);
             throw;
         }
     }

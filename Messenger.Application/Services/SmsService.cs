@@ -3,6 +3,7 @@ using Messenger.Application.Interfaces;
 using Messenger.Contracts.Models;
 using Messenger.Domain.Enums;
 using Messenger.Domain.Interfaces;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
 namespace Messenger.Application.Services;
@@ -12,6 +13,7 @@ public class SmsService : ISmsService
     private readonly ITwilioProvider _twilioProvider;
     private readonly ISNSProvider _isnsProvider;
     private readonly IVonageProvider _vonageProvider;
+    private readonly ILogger<SmsService> _logger;
     
     private readonly IMessageQueue _messageQueue;
     private readonly NotificationProvidersSettings _providersSettings;
@@ -21,12 +23,13 @@ public class SmsService : ISmsService
         ISNSProvider isnsProvider, 
         IVonageProvider vonageProvider, 
         IMessageQueue messageQueue, 
-        IOptions<NotificationProvidersSettings> providersSettings)
+        IOptions<NotificationProvidersSettings> providersSettings, ILogger<SmsService> logger)
     {
         _twilioProvider = twilioProvider;
         _isnsProvider = isnsProvider;
         _vonageProvider = vonageProvider;
         _messageQueue = messageQueue;
+        _logger = logger;
         _providersSettings = providersSettings.Value;
     }
 
@@ -35,7 +38,7 @@ public class SmsService : ISmsService
         if (!_providersSettings.Channels.Any(x => x.Enabled && x.Type == NotificationType.SMS))
         {
             _messageQueue.Enqueue(request);
-            throw new InvalidOperationException("SMS channel is disabled!");
+            throw new Exception("SMS channel is disabled!");
         }
         
         var availableProviders = _providersSettings.Providers
@@ -44,6 +47,8 @@ public class SmsService : ISmsService
             .Select(p => p.Type)
             .ToList();
 
+        var smsSent = false;
+        
         foreach (var provider in availableProviders)
         {
             try
@@ -52,21 +57,29 @@ public class SmsService : ISmsService
                 {
                     case ProviderType.SNS:
                         await _isnsProvider.SendSmsAsync(request.ToPhoneNumber,request.Message);
+                        smsSent = true;
                         break;
                     
                     case ProviderType.Twilio:
                         await _twilioProvider.SendSmsAsync(request.FromPhoneNumber, request.ToPhoneNumber, request.Message);
+                        smsSent = true;
                         break;
                     
                     case ProviderType.Vonage:
                         await _vonageProvider.SendSmsAsync(request.FromPhoneNumber, request.ToPhoneNumber, request.Message);
+                        smsSent = true;
                         break;
                 }
             }
-            catch (Exception exceptions)
+            catch (Exception exception)
             {
-                Console.WriteLine($"Error: {provider} failed to send sms notification. {exceptions}");
+                _logger.LogError(exception, $"{provider} failed to send sms notification");
             }
+        }
+
+        if (!smsSent)
+        {
+            _logger.LogError("Error: Could not send sms notification");
         }
     }
 }

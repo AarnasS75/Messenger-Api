@@ -1,5 +1,6 @@
 using Messenger.Domain.Interfaces;
 using Messenger.Infrastructure.Interfaces;
+using Microsoft.Extensions.Logging;
 using Twilio;
 using Twilio.Rest.Api.V2010.Account;
 using Twilio.Types;
@@ -8,8 +9,11 @@ namespace Messenger.Infrastructure.Providers;
 
 public class TwilioProvider : ITwilioProvider
 {
-    public TwilioProvider(ITwilioConfigurationProvider configurationProvider)
+    private readonly ILogger<TwilioProvider> _logger;
+    
+    public TwilioProvider(ITwilioConfigurationProvider configurationProvider, ILogger<TwilioProvider> logger)
     {
+        _logger = logger;
         var cfg = configurationProvider.GetConfigurationAsync().Result;
         TwilioClient.Init(cfg.AccountSid, cfg.AuthToken);
     }
@@ -26,7 +30,7 @@ public class TwilioProvider : ITwilioProvider
         }
         catch (Exception exception)
         {
-            Console.WriteLine($"Failed to send sms: {exception}");
+            _logger.LogError(exception, "Failed to send SMS to {To}", toPhoneNumber);
             throw;
         }
     }

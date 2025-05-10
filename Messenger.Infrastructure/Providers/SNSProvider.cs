@@ -5,6 +5,7 @@ using Amazon.SimpleNotificationService.Model;
 using Messenger.Domain.Interfaces;
 using Messenger.Infrastructure.Configuration;
 using Messenger.Infrastructure.Interfaces;
+using Microsoft.Extensions.Logging;
 
 namespace Messenger.Infrastructure.Providers;
 
@@ -12,9 +13,11 @@ public class SNSProvider : ISNSProvider
 {
     private readonly AmazonSimpleNotificationServiceClient _client;
     private readonly SNSConfiguration _snsConfiguration;
-
-    public SNSProvider(ISNSConfigurationProvider configurationProvider)
+    private readonly ILogger<SNSProvider> _logger;
+    
+    public SNSProvider(ISNSConfigurationProvider configurationProvider, ILogger<SNSProvider> logger)
     {
+        _logger = logger;
         _snsConfiguration = configurationProvider.GetConfigurationAsync().Result;
         
         var credentials = new BasicAWSCredentials(_snsConfiguration.AccessKey, _snsConfiguration.SecretKey);
@@ -35,7 +38,7 @@ public class SNSProvider : ISNSProvider
         }
         catch (Exception exception)
         {
-            Console.WriteLine($"Failed to send SNS Email: {exception}");
+            _logger.LogError(exception, "Failed to send Email to {To}", recipient);
             throw;
         }
     }
@@ -53,7 +56,7 @@ public class SNSProvider : ISNSProvider
         }
         catch (Exception exception)
         {
-            Console.WriteLine($"Failed to send SNS Sms: {exception}");
+            _logger.LogError(exception, "Failed to send Sms to {To}", phoneNumber);
             throw;
         }
     }
