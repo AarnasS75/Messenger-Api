@@ -6,4 +6,30 @@
         <Nullable>enable</Nullable>
     </PropertyGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\Messenger.Application\Messenger.Application.csproj" />
+      <ProjectReference Include="..\Messenger.Domain\Messenger.Domain.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="AWSSDK.SecretsManager" Version="4.0.0.2" />
+      <PackageReference Include="AWSSDK.SimpleNotificationService" Version="4.0.0.2" />
+      <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="10.0.0-preview.3.25171.5" />
+      <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+      <PackageReference Include="Twilio" Version="7.11.0" />
+      <PackageReference Include="Vonage" Version="7.17.2" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Reference Include="Microsoft.Extensions.Configuration">
+        <HintPath>..\..\..\..\..\..\Program Files\dotnet\shared\Microsoft.AspNetCore.App\9.0.4\Microsoft.Extensions.Configuration.dll</HintPath>
+      </Reference>
+      <Reference Include="Microsoft.Extensions.Hosting.Abstractions">
+        <HintPath>..\..\..\..\..\..\Program Files\dotnet\shared\Microsoft.AspNetCore.App\9.0.4\Microsoft.Extensions.Hosting.Abstractions.dll</HintPath>
+      </Reference>
+      <Reference Include="Microsoft.Extensions.Options">
+        <HintPath>..\..\..\..\..\..\Program Files\dotnet\shared\Microsoft.AspNetCore.App\9.0.4\Microsoft.Extensions.Options.dll</HintPath>
+      </Reference>
+    </ItemGroup>
+
 </Project>
