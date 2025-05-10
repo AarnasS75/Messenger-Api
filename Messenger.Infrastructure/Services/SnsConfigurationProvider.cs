@@ -6,30 +6,30 @@ using Newtonsoft.Json;
 
 namespace Messenger.Infrastructure.Services;
 
-public class VonageConfigurationProvider : IVonageConfigurationProvider
+public class SnsConfigurationProvider : ISNSConfigurationProvider
 {
     private readonly IAmazonSecretsManager _secretsManager;
 
-    public VonageConfigurationProvider(IAmazonSecretsManager secretsManager)
+    public SnsConfigurationProvider(IAmazonSecretsManager secretsManager)
     {
         _secretsManager = secretsManager;
     }
 
-    public async Task<VonageConfiguration> GetConfigurationAsync()
+    public async Task<SNSConfiguration> GetConfigurationAsync()
     {
         try
         {
             var response = await _secretsManager.GetSecretValueAsync(new GetSecretValueRequest
             {
-                SecretId = "Messenger/Vonage"
+                SecretId = "Messenger/SNS"
             });
         
-            return JsonConvert.DeserializeObject<VonageConfiguration>(response.SecretString);
+            return JsonConvert.DeserializeObject<SNSConfiguration>(response.SecretString);
         }
         catch (ResourceNotFoundException e)
         {
-            Console.WriteLine("Secret 'Messenger/Vonage' not found. Returning default configuration.");
-            return new VonageConfiguration();
+            Console.WriteLine("Secret 'Messenger/SNS' not found. Returning default configuration.");
+            return new SNSConfiguration();
         }
         catch (Exception e)
         {

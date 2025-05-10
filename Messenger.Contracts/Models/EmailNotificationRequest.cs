@@ -1,6 +1,8 @@
-namespace Messenger.Application.Models;
+using Messenger.Domain.Enums;
 
-public class NotificationRequest
+namespace Messenger.Contracts.Models;
+
+public class EmailNotificationRequest
 {
     public string Recipient { get; set; }
     public string Subject { get; set; }

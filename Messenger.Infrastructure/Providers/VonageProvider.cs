@@ -1,5 +1,4 @@
 using Messenger.Domain.Interfaces;
-using Messenger.Infrastructure.Configuration;
 using Messenger.Infrastructure.Interfaces;
 using Vonage;
 using Vonage.Messaging;
@@ -7,30 +6,33 @@ using Vonage.Request;
 
 namespace Messenger.Infrastructure.Providers;
 
-public class VonageProvider : INotificationProvider
+public class VonageProvider : IVonageProvider
 {
-    private readonly VonageConfiguration _configuration;
+    private readonly VonageClient _client;
 
     public VonageProvider(IVonageConfigurationProvider configuration)
     {
-        _configuration = configuration.GetConfigurationAsync().Result;
+        var cfg = configuration.GetConfigurationAsync().Result;
+        
+        var credentials = Credentials.FromApiKeyAndSecret(cfg.ApiKey, cfg.ApiSecret);
+        _client = new VonageClient(credentials);
     }
 
-    public async Task SendAsync(string recipient, string subject, string message)
+    public async Task SendSmsAsync(string fromPhoneNumber, string toPhoneNumber, string message)
     {
-        var credentials = Credentials.FromApiKeyAndSecret(_configuration.ApiKey, _configuration.ApiSecret);
-        var client = new VonageClient(credentials);
-
-        var response = await client.SmsClient.SendAnSmsAsync(new SendSmsRequest
+        try
         {
-            To = recipient,
-            From = _configuration.FromNumber,
-            Text = message
-        });
-
-        if (response.Messages[0].Status != "0")
+            await _client.SmsClient.SendAnSmsAsync(new SendSmsRequest
+            {
+                To = toPhoneNumber,
+                From = fromPhoneNumber,
+                Text = message
+            });
+        }
+        catch (Exception exception)
         {
-            throw new InvalidOperationException($"Vonage send failed: {response.Messages[0].ErrorText}");
+            Console.WriteLine($"Failed to send Vonage: {exception}");
+            throw;
         }
     }
 }

@@ -8,6 +8,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\Messenger.Application\Messenger.Application.csproj" />
+      <ProjectReference Include="..\Messenger.Contracts\Messenger.Contracts.csproj" />
       <ProjectReference Include="..\Messenger.Infrastructure\Messenger.Infrastructure.csproj" />
     </ItemGroup>
 

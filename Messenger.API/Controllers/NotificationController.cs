@@ -1,5 +1,5 @@
 using Messenger.Application.Interfaces;
-using Messenger.Application.Models;
+using Messenger.Contracts.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Messenger.API.Controllers;
@@ -8,24 +8,40 @@ namespace Messenger.API.Controllers;
 [Route("[controller]")]
 public class NotificationController : ControllerBase
 {
-    private readonly INotificationService _notificationService;
+    private readonly IEmailService _emailService;
+    private readonly ISmsService _smsService;
 
-    public NotificationController(INotificationService notificationService)
+    public NotificationController(IEmailService emailService, ISmsService smsService)
     {
-        _notificationService = notificationService;
+        _emailService = emailService;
+        _smsService = smsService;
     }
     
-    [HttpPost("send")]
-    public async Task<IActionResult> SendNotification([FromBody] NotificationRequest request)
+    [HttpPost("sms")]
+    public async Task<IActionResult> SendSms([FromBody] SmsNotificationRequest request)
     {
         try
         {
-            await _notificationService.SendNotificationAsync(request);
-            return Ok("Notification sent successfully!");
+            await _smsService.SendAsync(request);
+            return Ok("SMS sent successfully!");
         }
-        catch (Exception exception)
+        catch (Exception ex)
         {
-            return BadRequest($"Error sending notification: {exception}");
+            return BadRequest($"Failed to send SMS: {ex.Message}");
+        }
+    }
+
+    [HttpPost("email")]
+    public async Task<IActionResult> SendEmail([FromBody] EmailNotificationRequest request)
+    {
+        try
+        {
+            await _emailService.SendAsync(request);
+            return Ok("Email sent successfully!");
+        }
+        catch (Exception ex)
+        {
+            return BadRequest($"Failed to send Email: {ex.Message}");
         }
     }
 }

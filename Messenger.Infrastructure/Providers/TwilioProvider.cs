@@ -1,5 +1,4 @@
 using Messenger.Domain.Interfaces;
-using Messenger.Infrastructure.Configuration;
 using Messenger.Infrastructure.Interfaces;
 using Twilio;
 using Twilio.Rest.Api.V2010.Account;
@@ -7,22 +6,28 @@ using Twilio.Types;
 
 namespace Messenger.Infrastructure.Providers;
 
-public class TwilioProvider : INotificationProvider
+public class TwilioProvider : ITwilioProvider
 {
-    private readonly TwilioConfiguration _configuration;
-    
     public TwilioProvider(ITwilioConfigurationProvider configurationProvider)
     {
-        _configuration = configurationProvider.GetConfigurationAsync().Result;
-        TwilioClient.Init(_configuration.AccountSid, _configuration.AuthToken);
+        var cfg = configurationProvider.GetConfigurationAsync().Result;
+        TwilioClient.Init(cfg.AccountSid, cfg.AuthToken);
     }
     
-    public async Task SendAsync(string recipient, string subject, string message)
+    public async Task SendSmsAsync(string fromPhoneNumber, string toPhoneNumber, string message)
     {
-        await MessageResource.CreateAsync(
-            to: new PhoneNumber("+15673717680"),
-            from: new PhoneNumber(_configuration.FromPhoneNumber),
-            body: message
-        );
+        try
+        {
+            await MessageResource.CreateAsync(
+                to: new PhoneNumber(toPhoneNumber),
+                from: new PhoneNumber(fromPhoneNumber),
+                body: message
+            );
+        }
+        catch (Exception exception)
+        {
+            Console.WriteLine($"Failed to send sms: {exception}");
+            throw;
+        }
     }
 }

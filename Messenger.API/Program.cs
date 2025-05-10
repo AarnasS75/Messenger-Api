@@ -3,9 +3,12 @@ using Messenger.Infrastructure.Configuration;
 
 var builder = WebApplication.CreateBuilder(args);
 {
+    builder.Services.Configure<NotificationProvidersSettings>(
+        builder.Configuration.GetSection(NotificationProvidersSettings.SectionName));
+
     builder.Services
         .RegisterApplicationServices()
-        .RegisterInfrastructureServices(builder.Configuration);
+        .RegisterInfrastructureServices();
     
     builder.Services.AddControllers();
     builder.Services.AddEndpointsApiExplorer();

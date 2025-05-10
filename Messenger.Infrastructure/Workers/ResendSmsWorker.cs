@@ -4,13 +4,13 @@ using Microsoft.Extensions.Hosting;
 
 namespace Messenger.Infrastructure.Workers;
 
-public class ResendNotificationWorker : BackgroundService
+public class ResendSmsWorker : BackgroundService
 {
     private readonly IServiceProvider _serviceProvider;
     private readonly TimeSpan _retryInterval = TimeSpan.FromSeconds(60);
     private const int BATCH_SIZE = 10;
     
-    public ResendNotificationWorker(IServiceProvider serviceProvider)
+    public ResendSmsWorker(IServiceProvider serviceProvider)
     {
         _serviceProvider = serviceProvider;
     }
@@ -21,12 +21,12 @@ public class ResendNotificationWorker : BackgroundService
         {
             using var scope = _serviceProvider.CreateScope();
             var queue = scope.ServiceProvider.GetRequiredService<IMessageQueue>();
-            var notificationService = scope.ServiceProvider.GetRequiredService<INotificationService>();
+            var smsService = scope.ServiceProvider.GetRequiredService<ISmsService>();
 
-            var failedMessages = queue.DequeueFailedMessages(BATCH_SIZE);
+            var failedMessages = queue.DequeueFailedSms(BATCH_SIZE);
             foreach (var message in failedMessages)
             {
-                await notificationService.SendNotificationAsync(message);
+                await smsService.SendAsync(message);
             }
 
             await Task.Delay(_retryInterval, stoppingToken);

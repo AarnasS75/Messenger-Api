@@ -7,6 +7,7 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\Messenger.Contracts\Messenger.Contracts.csproj" />
       <ProjectReference Include="..\Messenger.Domain\Messenger.Domain.csproj" />
     </ItemGroup>
 
