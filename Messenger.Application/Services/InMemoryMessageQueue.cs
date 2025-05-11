@@ -1,4 +1,3 @@
-using System.Collections.Concurrent;
 using Messenger.Application.Interfaces;
 using Messenger.Contracts.Models;
 
@@ -6,38 +5,36 @@ namespace Messenger.Application.Services;
 
 public class InMemoryMessageQueue : IMessageQueue
 {
-    private readonly ConcurrentQueue<EmailNotificationRequest> _failedEmails = new();
-    private readonly ConcurrentQueue<SmsNotificationRequest> _failedSms = new();
+    private readonly List<EmailNotificationRequest> _failedEmails = [];
+    private readonly List<SmsNotificationRequest> _failedSms = [];
 
     public void Enqueue(EmailNotificationRequest request)
     {
-        _failedEmails.Enqueue(request);
+        _failedEmails.Add(request);
     }
 
     public void Enqueue(SmsNotificationRequest request)
     {
-        _failedSms.Enqueue(request);
+        _failedSms.Add(request);
     }
-
-    public IEnumerable<EmailNotificationRequest> DequeueFailedEmails(int batchSize)
+    
+    public IEnumerable<EmailNotificationRequest> PeekFailedEmails(int batchSize)
     {
-        var messages = new List<EmailNotificationRequest>();
-        for (var i = 0; i < batchSize && _failedEmails.TryDequeue(out var message); i++)
-        {
-            messages.Add(message);
-        }
-
-        return messages;
+        return _failedEmails.Take(batchSize).ToList();
     }
-
-    public IEnumerable<SmsNotificationRequest> DequeueFailedSms(int batchSize)
+    
+    public IEnumerable<SmsNotificationRequest> PeekFailedSms(int batchSize)
     {
-        var smss = new List<SmsNotificationRequest>();
-        for (var i = 0; i < batchSize && _failedSms.TryDequeue(out var sms); i++)
-        {
-            smss.Add(sms);
-        }
-
-        return smss;
+        return _failedSms.Take(batchSize).ToList();
+    }
+    
+    public void Remove(EmailNotificationRequest request)
+    {
+        _failedEmails.Remove(request);
+    }
+    
+    public void Remove(SmsNotificationRequest request)
+    {
+        _failedSms.Remove(request);
     }
 }

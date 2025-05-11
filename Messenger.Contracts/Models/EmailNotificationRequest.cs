@@ -1,5 +1,3 @@
-using Messenger.Domain.Enums;
-
 namespace Messenger.Contracts.Models;
 
 public class EmailNotificationRequest

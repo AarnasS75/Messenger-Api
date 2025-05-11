@@ -1,6 +1,6 @@
 namespace Messenger.Domain.Interfaces;
 
-public interface IVonageProvider
+public interface ISmsProvider
 {
     Task SendSmsAsync(string fromPhoneNumber, string toPhoneNumber, string message);
 }

@@ -7,7 +7,7 @@ using Vonage.Request;
 
 namespace Messenger.Infrastructure.Providers;
 
-public class VonageProvider : IVonageProvider
+public class VonageProvider : ISmsProvider
 {
     private readonly VonageClient _client;
     private readonly ILogger<VonageProvider> _logger;

@@ -1,14 +1,16 @@
+using Message.Handlers.Configuration;
 using Messenger.Application.Configuration;
 using Messenger.Infrastructure.Configuration;
 
 var builder = WebApplication.CreateBuilder(args);
 {
-    builder.Services.Configure<NotificationProvidersSettings>(
-        builder.Configuration.GetSection(NotificationProvidersSettings.SectionName));
+    builder.Services.Configure<NotificationsConfiguration>(
+        builder.Configuration.GetSection(NotificationsConfiguration.SectionName));
 
     builder.Services
         .RegisterApplicationServices()
-        .RegisterInfrastructureServices();
+        .RegisterInfrastructureServices()
+        .AddEventBusHandlers();
     
     builder.Services.AddControllers();
     builder.Services.AddEndpointsApiExplorer();

@@ -2,7 +2,7 @@ namespace Messenger.Domain.Enums;
 
 public enum ProviderType
 {
-    SNS,
+    Aws_SNS,
     Twilio,
     Vonage
 }

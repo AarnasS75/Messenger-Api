@@ -6,6 +6,8 @@ public interface IMessageQueue
 {
     void Enqueue(EmailNotificationRequest request);
     void Enqueue(SmsNotificationRequest request);
-    IEnumerable<EmailNotificationRequest> DequeueFailedEmails(int batchSize);
-    IEnumerable<SmsNotificationRequest> DequeueFailedSms(int batchSize);
+    void Remove(EmailNotificationRequest request);
+    void Remove(SmsNotificationRequest request);
+    IEnumerable<EmailNotificationRequest> PeekFailedEmails(int batchSize);
+    IEnumerable<SmsNotificationRequest> PeekFailedSms(int batchSize);
 }

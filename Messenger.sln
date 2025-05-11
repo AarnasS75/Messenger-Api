@@ -20,6 +20,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Messenger.Domain", "Messeng
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Messenger.Infrastructure", "Messenger.Infrastructure\Messenger.Infrastructure.csproj", "{A13DE437-4524-4BF3-A97F-F4D539225365}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Message.Handlers", "Message.Handlers\Message.Handlers.csproj", "{8780D894-5C09-4DBE-A193-1817654FAF54}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Message.Handlers.Contracts", "Message.Handlers.Contracts\Message.Handlers.Contracts.csproj", "{A6D800CF-F9BB-41F0-8A53-568D3BE8AD10}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -53,5 +57,13 @@ Global
 		{A13DE437-4524-4BF3-A97F-F4D539225365}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A13DE437-4524-4BF3-A97F-F4D539225365}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A13DE437-4524-4BF3-A97F-F4D539225365}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8780D894-5C09-4DBE-A193-1817654FAF54}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8780D894-5C09-4DBE-A193-1817654FAF54}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8780D894-5C09-4DBE-A193-1817654FAF54}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8780D894-5C09-4DBE-A193-1817654FAF54}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A6D800CF-F9BB-41F0-8A53-568D3BE8AD10}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A6D800CF-F9BB-41F0-8A53-568D3BE8AD10}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A6D800CF-F9BB-41F0-8A53-568D3BE8AD10}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A6D800CF-F9BB-41F0-8A53-568D3BE8AD10}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

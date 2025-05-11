@@ -2,8 +2,8 @@ using Messenger.Domain.Enums;
 
 namespace Messenger.Application.Configuration;
 
-public class ChannelSettings
+public class ChannelConfiguration
 {
-    public NotificationType Type { get; set; }
     public bool Enabled { get; set; }
+    public Dictionary<ProviderType, ProviderConfiguration> Providers { get; set; }
 }

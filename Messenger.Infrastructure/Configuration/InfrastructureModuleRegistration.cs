@@ -3,6 +3,7 @@ using Amazon.SecretsManager;
 using Messenger.Application.Interfaces;
 using Messenger.Application.Services;
 using Messenger.Domain.Interfaces;
+using Messenger.Infrastructure.Factory;
 using Messenger.Infrastructure.Interfaces;
 using Messenger.Infrastructure.Providers;
 using Messenger.Infrastructure.Services;
@@ -16,16 +17,18 @@ public static class InfrastructureModuleRegistration
     public static IServiceCollection RegisterInfrastructureServices(this IServiceCollection services)
     {
         services.AddSingleton<IAmazonSecretsManager>(new AmazonSecretsManagerClient(region: RegionEndpoint.EUCentral1));
+        services.AddSingleton<IMessageQueue, InMemoryMessageQueue>();
         
+        services.AddScoped<INotificationProviderFactory, NotificationProviderFactory>();
         services.AddScoped<ISNSConfigurationProvider, SnsConfigurationProvider>();
         services.AddScoped<ITwilioConfigurationProvider, TwilioConfigurationProvider>();
         services.AddScoped<IVonageConfigurationProvider, VonageConfigurationProvider>();
 
-        services.AddScoped<ISNSProvider, SNSProvider>();
-        services.AddScoped<ITwilioProvider, TwilioProvider>();
-        services.AddScoped<IVonageProvider, VonageProvider>();
+        services.AddScoped<ISmsProvider, TwilioProvider>();
+        services.AddScoped<ISmsProvider, VonageProvider>();
         
-        services.AddSingleton<IMessageQueue, InMemoryMessageQueue>();
+        services.AddScoped<AwsSnsProvider>();
+        
         services.AddHostedService<ResendSmsWorker>();
         services.AddHostedService<ResendEmailWorker>();
 

@@ -9,13 +9,13 @@ using Microsoft.Extensions.Logging;
 
 namespace Messenger.Infrastructure.Providers;
 
-public class SNSProvider : ISNSProvider
+public class AwsSnsProvider : IEmailProvider, ISmsProvider
 {
     private readonly AmazonSimpleNotificationServiceClient _client;
     private readonly SNSConfiguration _snsConfiguration;
-    private readonly ILogger<SNSProvider> _logger;
+    private readonly ILogger<AwsSnsProvider> _logger;
     
-    public SNSProvider(ISNSConfigurationProvider configurationProvider, ILogger<SNSProvider> logger)
+    public AwsSnsProvider(ISNSConfigurationProvider configurationProvider, ILogger<AwsSnsProvider> logger)
     {
         _logger = logger;
         _snsConfiguration = configurationProvider.GetConfigurationAsync().Result;
@@ -43,20 +43,20 @@ public class SNSProvider : ISNSProvider
         }
     }
 
-    public async Task SendSmsAsync(string phoneNumber, string message)
+    public async Task SendSmsAsync(string fromPhoneNumber, string toPhoneNumber, string message)
     {
         try
         {
             var smsRequest = new PublishRequest
             {
-                PhoneNumber = phoneNumber,
+                PhoneNumber = toPhoneNumber,
                 Message = message
             };
             await _client.PublishAsync(smsRequest);
         }
         catch (Exception exception)
         {
-            _logger.LogError(exception, "Failed to send Sms to {To}", phoneNumber);
+            _logger.LogError(exception, "Failed to send Sms to {To}", toPhoneNumber);
             throw;
         }
     }

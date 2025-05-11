@@ -7,7 +7,7 @@ using Twilio.Types;
 
 namespace Messenger.Infrastructure.Providers;
 
-public class TwilioProvider : ITwilioProvider
+public class TwilioProvider : ISmsProvider
 {
     private readonly ILogger<TwilioProvider> _logger;
     

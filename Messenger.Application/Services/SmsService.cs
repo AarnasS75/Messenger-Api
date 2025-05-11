@@ -1,8 +1,6 @@
 using Messenger.Application.Configuration;
 using Messenger.Application.Interfaces;
 using Messenger.Contracts.Models;
-using Messenger.Domain.Enums;
-using Messenger.Domain.Interfaces;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
@@ -10,70 +8,53 @@ namespace Messenger.Application.Services;
 
 public class SmsService : ISmsService
 {
-    private readonly ITwilioProvider _twilioProvider;
-    private readonly ISNSProvider _isnsProvider;
-    private readonly IVonageProvider _vonageProvider;
-    private readonly ILogger<SmsService> _logger;
-    
+    private readonly INotificationProviderFactory _providerFactory;
     private readonly IMessageQueue _messageQueue;
-    private readonly NotificationProvidersSettings _providersSettings;
+    private readonly NotificationsConfiguration _providersConfiguration;
+
+    private readonly ILogger<SmsService> _logger;
 
     public SmsService(
-        ITwilioProvider twilioProvider, 
-        ISNSProvider isnsProvider, 
-        IVonageProvider vonageProvider, 
         IMessageQueue messageQueue, 
-        IOptions<NotificationProvidersSettings> providersSettings, ILogger<SmsService> logger)
+        IOptions<NotificationsConfiguration> providersSettings, 
+        ILogger<SmsService> logger, 
+        INotificationProviderFactory providerFactory)
     {
-        _twilioProvider = twilioProvider;
-        _isnsProvider = isnsProvider;
-        _vonageProvider = vonageProvider;
         _messageQueue = messageQueue;
         _logger = logger;
-        _providersSettings = providersSettings.Value;
+        _providerFactory = providerFactory;
+        _providersConfiguration = providersSettings.Value;
     }
 
     public async Task SendAsync(SmsNotificationRequest request)
     {
-        if (!_providersSettings.Channels.Any(x => x.Enabled && x.Type == NotificationType.SMS))
+        var channel = _providersConfiguration.Sms;
+        
+        if (channel == null || !channel.Enabled)
         {
             _messageQueue.Enqueue(request);
-            throw new Exception("SMS channel is disabled!");
+            throw new Exception("SMS channel is not active or disabled!");
         }
         
-        var availableProviders = _providersSettings.Providers
-            .Where(p => p.Enabled)
-            .OrderBy(p => p.Priority)
-            .Select(p => p.Type)
+        var availableProviders = channel.Providers
+            .Where(kvp => kvp.Value.Enabled)
+            .OrderBy(kvp => kvp.Value.Priority)
             .ToList();
 
         var smsSent = false;
         
-        foreach (var provider in availableProviders)
+        foreach (var availableProvider in availableProviders)
         {
             try
             {
-                switch (provider)
-                {
-                    case ProviderType.SNS:
-                        await _isnsProvider.SendSmsAsync(request.ToPhoneNumber,request.Message);
-                        smsSent = true;
-                        break;
-                    
-                    case ProviderType.Twilio:
-                        await _twilioProvider.SendSmsAsync(request.FromPhoneNumber, request.ToPhoneNumber, request.Message);
-                        smsSent = true;
-                        break;
-                    
-                    case ProviderType.Vonage:
-                        await _vonageProvider.SendSmsAsync(request.FromPhoneNumber, request.ToPhoneNumber, request.Message);
-                        smsSent = true;
-                        break;
-                }
+                var provider = _providerFactory.GetSmsProvider(availableProvider.Key);
+                await provider.SendSmsAsync(request.FromPhoneNumber, request.ToPhoneNumber, request.Message);
+                
+                smsSent = true;
             }
             catch (Exception exception)
             {
-                _logger.LogError(exception, $"{provider} failed to send sms notification");
+                _logger.LogError(exception, $"{availableProvider.Key} failed to send sms notification");
             }
         }
 
