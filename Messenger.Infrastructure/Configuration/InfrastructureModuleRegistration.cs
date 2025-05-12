@@ -24,9 +24,8 @@ public static class InfrastructureModuleRegistration
         services.AddScoped<ITwilioConfigurationProvider, TwilioConfigurationProvider>();
         services.AddScoped<IVonageConfigurationProvider, VonageConfigurationProvider>();
 
-        services.AddScoped<ISmsProvider, TwilioProvider>();
-        services.AddScoped<ISmsProvider, VonageProvider>();
-        
+        services.AddScoped<TwilioProvider>();
+        services.AddScoped<VonageProvider>();
         services.AddScoped<AwsSnsProvider>();
         
         services.AddHostedService<ResendSmsWorker>();
