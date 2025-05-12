@@ -5,9 +5,9 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Message.Handlers.Configuration;
 
-public static class EventBusHandlersRegistration
+public static class RabbitMqMessageHandlersRegistration
 {
-    public static IServiceCollection AddEventBusHandlers(this IServiceCollection services)
+    public static IServiceCollection AddRabbitMessageHandlers(this IServiceCollection services)
     {
         services.AddMassTransit(x =>
         {

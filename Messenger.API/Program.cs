@@ -10,7 +10,7 @@ var builder = WebApplication.CreateBuilder(args);
     builder.Services
         .RegisterApplicationServices()
         .RegisterInfrastructureServices()
-        .AddEventBusHandlers();
+        .AddRabbitMessageHandlers();
     
     builder.Services.AddControllers();
     builder.Services.AddEndpointsApiExplorer();
