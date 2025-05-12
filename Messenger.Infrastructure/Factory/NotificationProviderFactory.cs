@@ -1,6 +1,5 @@
 using Messenger.Application.Interfaces;
 using Messenger.Domain.Enums;
-using Messenger.Domain.Interfaces;
 using Messenger.Infrastructure.Providers;
 using Microsoft.Extensions.DependencyInjection;
 

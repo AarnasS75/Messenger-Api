@@ -1,8 +1,6 @@
 using Messenger.Application.Configuration;
 using Messenger.Application.Interfaces;
 using Messenger.Contracts.Models;
-using Messenger.Domain.Enums;
-using Messenger.Domain.Interfaces;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 

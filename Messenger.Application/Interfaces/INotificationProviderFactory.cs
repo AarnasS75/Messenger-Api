@@ -1,5 +1,4 @@
 using Messenger.Domain.Enums;
-using Messenger.Domain.Interfaces;
 
 namespace Messenger.Application.Interfaces;
 

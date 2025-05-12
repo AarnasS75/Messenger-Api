@@ -2,7 +2,6 @@ using Amazon;
 using Amazon.SecretsManager;
 using Messenger.Application.Interfaces;
 using Messenger.Application.Services;
-using Messenger.Domain.Interfaces;
 using Messenger.Infrastructure.Factory;
 using Messenger.Infrastructure.Interfaces;
 using Messenger.Infrastructure.Providers;

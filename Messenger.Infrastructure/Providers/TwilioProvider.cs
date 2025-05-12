@@ -1,4 +1,4 @@
-using Messenger.Domain.Interfaces;
+using Messenger.Application.Interfaces;
 using Messenger.Infrastructure.Interfaces;
 using Microsoft.Extensions.Logging;
 using Twilio;

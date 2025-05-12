@@ -1,4 +1,4 @@
-namespace Messenger.Domain.Interfaces;
+namespace Messenger.Application.Interfaces;
 
 public interface ISmsProvider
 {

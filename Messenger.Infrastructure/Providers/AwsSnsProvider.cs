@@ -2,7 +2,7 @@ using Amazon;
 using Amazon.Runtime;
 using Amazon.SimpleNotificationService;
 using Amazon.SimpleNotificationService.Model;
-using Messenger.Domain.Interfaces;
+using Messenger.Application.Interfaces;
 using Messenger.Infrastructure.Configuration;
 using Messenger.Infrastructure.Interfaces;
 using Microsoft.Extensions.Logging;
