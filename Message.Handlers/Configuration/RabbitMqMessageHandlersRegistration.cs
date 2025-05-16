@@ -1,51 +1,58 @@
 using MassTransit;
-using Message.Handlers.Contracts;
-using Message.Handlers.Handlers;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Message.Handlers.Configuration;
 
 public static class RabbitMqMessageHandlersRegistration
 {
-    public static IServiceCollection AddRabbitMessageHandlers(this IServiceCollection services)
+    public static IServiceCollection AddRabbitMessageHandlers(this IServiceCollection services, ConfigurationManager configuration)
     {
+        var rabbitSection = configuration.GetSection(nameof(RabbitMQSettings));
+        var rabbitSettings = new RabbitMQSettings();
+        rabbitSection.Bind(rabbitSettings);
+        
         services.AddMassTransit(x =>
         {
-            x.AddConsumer<UserAuthenticationEventHandler>();
-            x.AddConsumer<ShipmentCompletedEventHandler>();
+            foreach (var queue in rabbitSettings.Queues)
+            {
+                var consumerType = Type.GetType($"Message.Handlers.Handlers.{queue.Consumer}");
+                if (consumerType != null)
+                {
+                    x.AddConsumer(consumerType);
+                }
+            }
+
             x.UsingRabbitMq((context, cfg) =>
             {
-                cfg.Host("localhost", "/",h =>
+                cfg.Host(rabbitSettings.Host, rabbitSettings.Port, "/", h =>
                 {
-                    h.Username("guest");
-                    h.Password("guest");
+                    h.Username(rabbitSettings.Username);
+                    h.Password(rabbitSettings.Password);
                 });
-                
+
+
                 cfg.UseRawJsonSerializer();
-                
-                cfg.ReceiveEndpoint("Users.Exchange.UserAuthenticationEvent", e =>
-                {
-                    e.ConfigureConsumeTopology = false;
-                    e.Bind("Users.Exchange", s =>
-                    {
-                        s.RoutingKey = "UserAuthenticationEvent";
-                        s.ExchangeType = "topic";
-                    });
 
-                    e.ConfigureConsumer<UserAuthenticationEventHandler>(context);
-                });
-                
-                cfg.ReceiveEndpoint("Orders.Exchange.ShipmentCompletedEvent", e =>
+                foreach (var queue in rabbitSettings.Queues)
                 {
-                    e.ConfigureConsumeTopology = false;
-                    e.Bind("Orders.Exchange", s =>
-                    {
-                        s.RoutingKey = "ShipmentCompletedEvent";
-                        s.ExchangeType = "topic";
-                    });
+                    var consumerType = Type.GetType($"Message.Handlers.Handlers.{queue.Consumer}");
 
-                    e.ConfigureConsumer<ShipmentCompletedEventHandler>(context);
-                });
+                    if (consumerType != null)
+                    {
+                        cfg.ReceiveEndpoint(queue.QueueName, e =>
+                        {
+                            e.ConfigureConsumeTopology = false;
+                            e.Bind(queue.Exchange, s =>
+                            {
+                                s.RoutingKey = queue.RoutingKey;
+                                s.ExchangeType = queue.ExchangeType;
+                            });
+
+                            e.ConfigureConsumer(context, consumerType);
+                        });
+                    }
+                }
             });
         });
 

@@ -1,0 +1,26 @@
+# Ignore build output folders
+bin/
+obj/
+
+# Ignore user-specific files and folders
+.vscode/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Ignore git and other version control folders
+.git
+.gitignore
+
+# Ignore Docker compose and environment files (optional)
+docker-compose.yml
+docker-compose.override.yml
+.env
+
+# Ignore logs and temp files
+*.log
+*.tmp
+*.temp
+
+.idea/

@@ -1,0 +1,24 @@
+{
+    "RabbitMQSettings": {
+        "Host": "rabbitmq",
+        "Port": "5672",
+        "Username": "guest",
+        "Password": "guest",
+        "Queues": [
+            {
+                "QueueName": "Users.Exchange.UserAuthenticationEvent",
+                "Exchange": "Users.Exchange",
+                "RoutingKey": "UserAuthenticationEvent",
+                "ExchangeType": "topic",
+                "Consumer": "UserAuthenticationEventHandler"
+            },
+            {
+                "QueueName": "Orders.Exchange.ShipmentCompletedEvent",
+                "Exchange": "Orders.Exchange",
+                "RoutingKey": "ShipmentCompletedEvent",
+                "ExchangeType": "topic",
+                "Consumer": "ShipmentCompletedEventHandler"
+            }
+        ]
+    }
+}

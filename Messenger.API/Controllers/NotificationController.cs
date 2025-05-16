@@ -1,4 +1,7 @@
-using Messenger.Application.Interfaces;
+using MapsterMapper;
+using MediatR;
+using Messenger.Application.Services.Notification.Commands.Email;
+using Messenger.Application.Services.Notification.Commands.Sms;
 using Messenger.Contracts.Models;
 using Microsoft.AspNetCore.Mvc;
 
@@ -8,22 +11,24 @@ namespace Messenger.API.Controllers;
 [Route("[controller]")]
 public class NotificationController : ControllerBase
 {
-    private readonly IEmailService _emailService;
-    private readonly ISmsService _smsService;
+    private readonly ISender _mediator;
+    private readonly IMapper _mapper;
 
-    public NotificationController(IEmailService emailService, ISmsService smsService)
+    public NotificationController(ISender mediator, IMapper mapper)
     {
-        _emailService = emailService;
-        _smsService = smsService;
+        _mediator = mediator;
+        _mapper = mapper;
     }
-    
+
     [HttpPost("sms")]
     public async Task<IActionResult> SendSms([FromBody] SmsNotificationRequest request)
     {
         try
         {
-            await _smsService.SendAsync(request);
-            return Ok("SMS sent successfully!");
+            var command = _mapper.Map<SmsCommand>(request);
+            await _mediator.Send(command);
+            
+            return Ok();
         }
         catch (Exception ex)
         {
@@ -36,8 +41,10 @@ public class NotificationController : ControllerBase
     {
         try
         {
-            await _emailService.SendAsync(request);
-            return Ok("Email sent successfully!");
+            var command = _mapper.Map<EmailCommand>(request);
+            await _mediator.Send(command);
+
+            return Ok();
         }
         catch (Exception ex)
         {

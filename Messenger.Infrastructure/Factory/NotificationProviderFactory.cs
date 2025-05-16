@@ -1,4 +1,7 @@
-using Messenger.Application.Interfaces;
+using MediatR;
+using Messenger.Application.Common.Interfaces.Providers;
+using Messenger.Application.Services.Notification.Commands.Email;
+using Messenger.Application.Services.Notification.Commands.Sms;
 using Messenger.Domain.Enums;
 using Messenger.Infrastructure.Providers;
 using Microsoft.Extensions.DependencyInjection;
@@ -14,23 +17,29 @@ public class NotificationProviderFactory : INotificationProviderFactory
         _serviceProvider = serviceProvider;
     }
 
-    public ISmsProvider GetSmsProvider(ProviderType name)
+    public INotificationProvider<TCommand>? GetProvider<TCommand>(ProviderType providerType) where TCommand : IRequest
     {
-        return name switch
+        return typeof(TCommand).Name switch
         {
-            ProviderType.Twilio => _serviceProvider.GetRequiredService<TwilioProvider>(),
-            ProviderType.Aws_SNS => _serviceProvider.GetRequiredService<AwsSnsProvider>(),
-            ProviderType.Vonage => _serviceProvider.GetRequiredService<VonageProvider>(),
-            _ => throw new ArgumentException($"SMS provider '{name}' not supported.")
-        };
-    }
-
-    public IEmailProvider GetEmailProvider(ProviderType name)
-    {
-        return name switch
-        {
-            ProviderType.Aws_SNS => _serviceProvider.GetRequiredService<AwsSnsProvider>(),
-            _ => throw new ArgumentException($"Email provider '{name}' not supported.")
+            // Sms Providers
+            nameof(SmsCommand) => providerType switch
+            {
+                ProviderType.Aws_SNS => _serviceProvider.GetRequiredService<AwsSnsProvider>() as
+                    INotificationProvider<TCommand>,
+                ProviderType.Twilio => _serviceProvider.GetRequiredService<TwilioProvider>() as
+                    INotificationProvider<TCommand>,
+                ProviderType.Vonage => _serviceProvider.GetRequiredService<VonageProvider>() as
+                    INotificationProvider<TCommand>,
+                _ => throw new Exception($"SMS provider: {providerType} was not found")
+            },
+            // Email Providers
+            nameof(EmailCommand) => providerType switch
+            {
+                ProviderType.Aws_SNS => _serviceProvider.GetRequiredService<AwsSnsProvider>() as
+                    INotificationProvider<TCommand>,
+                _ => throw new Exception($"Email provider: {providerType} was not found")
+            },
+            _ => throw new Exception($"{typeof(TCommand).Name} was not found")
         };
     }
 }
