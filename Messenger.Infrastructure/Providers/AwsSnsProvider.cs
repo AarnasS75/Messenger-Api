@@ -2,61 +2,64 @@ using Amazon;
 using Amazon.Runtime;
 using Amazon.SimpleNotificationService;
 using Amazon.SimpleNotificationService.Model;
-using Messenger.Application.Interfaces;
+using Messenger.Application.Common.Interfaces.Providers;
+using Messenger.Application.Services.Notification.Commands.Email;
+using Messenger.Application.Services.Notification.Commands.Sms;
 using Messenger.Infrastructure.Configuration;
-using Messenger.Infrastructure.Interfaces;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 
 namespace Messenger.Infrastructure.Providers;
 
-public class AwsSnsProvider : IEmailProvider, ISmsProvider
+public class AwsSnsProvider : 
+    INotificationProvider<SmsCommand>, 
+    INotificationProvider<EmailCommand>
 {
     private readonly AmazonSimpleNotificationServiceClient _client;
-    private readonly SNSConfiguration _snsConfiguration;
+    private readonly SNSConfiguration _configuration;
     private readonly ILogger<AwsSnsProvider> _logger;
     
-    public AwsSnsProvider(ISNSConfigurationProvider configurationProvider, ILogger<AwsSnsProvider> logger)
+    public AwsSnsProvider(IOptions<SNSConfiguration> configuration, ILogger<AwsSnsProvider> logger)
     {
         _logger = logger;
-        _snsConfiguration = configurationProvider.GetConfigurationAsync().Result;
-        
-        var credentials = new BasicAWSCredentials(_snsConfiguration.AccessKey, _snsConfiguration.SecretKey);
+        _configuration = configuration.Value;
+        var credentials = new BasicAWSCredentials(_configuration.AccessKey, _configuration.SecretKey);
         _client = new AmazonSimpleNotificationServiceClient(credentials, region: RegionEndpoint.EUCentral1);
     }
     
-    public async Task SendEmailAsync(string recipient, string subject, string message)
-    {
-        try
-        {
-            var emailRequest = new PublishRequest
-            {
-                TopicArn = _snsConfiguration.TopicArn,
-                Message = message,
-                Subject = subject
-            };
-            await _client.PublishAsync(emailRequest);
-        }
-        catch (Exception exception)
-        {
-            _logger.LogError(exception, "Failed to send Email to {To}", recipient);
-            throw;
-        }
-    }
-
-    public async Task SendSmsAsync(string fromPhoneNumber, string toPhoneNumber, string message)
+    public async Task SendAsync(SmsCommand command)
     {
         try
         {
             var smsRequest = new PublishRequest
             {
-                PhoneNumber = toPhoneNumber,
-                Message = message
+                PhoneNumber = command.ToPhoneNumber,
+                Message = command.Message
             };
             await _client.PublishAsync(smsRequest);
         }
         catch (Exception exception)
         {
-            _logger.LogError(exception, "Failed to send Sms to {To}", toPhoneNumber);
+            _logger.LogError(exception, "Failed to send Sms to {To}", command.ToPhoneNumber);
+            throw;
+        }
+    }
+
+    public async Task SendAsync(EmailCommand command)
+    {
+        try
+        {
+            var emailRequest = new PublishRequest
+            {
+                TopicArn = _configuration.TopicArn,
+                Message = command.Body,
+                Subject = command.Subject
+            };
+            await _client.PublishAsync(emailRequest);
+        }
+        catch (Exception exception)
+        {
+            _logger.LogError(exception, "Failed to send Email to {To}", command.Recipient);
             throw;
         }
     }

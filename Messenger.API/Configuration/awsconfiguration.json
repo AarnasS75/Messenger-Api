@@ -1,0 +1,17 @@
+{
+  "SNSConfiguration": {
+    "TopicArn": "Providers",
+    "AccessKey": "Providers",
+    "SecretKey": "Providers"
+  },
+  "TwilioConfiguration": {
+    "AccountSid": "Twilio",
+    "CompanyPhoneNumber": "Twilio",
+    "AuthToken": "Twilio"
+  },
+  "VonageConfiguration": {
+    "ApiKey": "Vonage",
+    "ApiSecret": "Vonage",
+    "CompanyPhoneNumber": "Vonage"
+  }
+}

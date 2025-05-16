@@ -22,7 +22,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Messenger.Infrastructure", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Message.Handlers", "Message.Handlers\Message.Handlers.csproj", "{8780D894-5C09-4DBE-A193-1817654FAF54}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Message.Handlers.Contracts", "Message.Handlers.Contracts\Message.Handlers.Contracts.csproj", "{A6D800CF-F9BB-41F0-8A53-568D3BE8AD10}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Message.Handlers.Messages", "Message.Handlers.Messages\Message.Handlers.Messages.csproj", "{A6D800CF-F9BB-41F0-8A53-568D3BE8AD10}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Messenger.Web", "Messenger.Web", "{764251DF-48DD-4B5D-A39C-45B6A98FD211}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -1,6 +1,8 @@
 using MassTransit;
-using Message.Handlers.Contracts.Messages;
-using Messenger.Application.Interfaces;
+using MediatR;
+using Message.Handlers.Messages;
+using Messenger.Application.Common.Interfaces;
+using Messenger.Application.Services.Notification.Commands.Email;
 using Messenger.Contracts.Models;
 using Microsoft.Extensions.Logging;
 
@@ -8,25 +10,23 @@ namespace Message.Handlers.Contracts;
 
 public class ShipmentCompletedEventHandler : IConsumer<ShipmentCompletedEventMesssage>
 {
-    private readonly IEmailService _emailService;
+    private readonly IMediator _mediator;
     private readonly ILogger<ShipmentCompletedEventMesssage> _logger;
 
-    public ShipmentCompletedEventHandler(ILogger<ShipmentCompletedEventMesssage> logger, IEmailService emailService)
+    public ShipmentCompletedEventHandler(IMediator mediator, ILogger<ShipmentCompletedEventMesssage> logger)
     {
+        _mediator = mediator;
         _logger = logger;
-        _emailService = emailService;
     }
 
     public async Task Consume(ConsumeContext<ShipmentCompletedEventMesssage> context)
     {
         try
         {
-            await _emailService.SendAsync(new EmailNotificationRequest
-            {
-                Recipient = context.Message.UserName,
-                Message = context.Message.ShipmentId,
-                Subject = "Shipment Completed"
-            });
+            await _mediator.Send(new EmailCommand(
+                Recipient: context.Message.Recipient,
+                Body: context.Message.Body,
+                Subject: context.Message.Body));
         }
         catch (Exception exception)
         {
